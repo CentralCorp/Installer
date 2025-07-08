@@ -7,21 +7,8 @@ import { useI18n } from 'vue-i18n'
 import { baseFetch, download } from '@/api'
 import DownloadView from '@/views/DownloadView.vue'
 import RequirementsView from '@/views/RequirementsView.vue'
-import FlagBrazil from '@/components/FlagBrazil.vue'
-import FlagChina from '@/components/FlagChina.vue'
-import FlagCzechia from '@/components/FlagCzechia.vue'
-import FlagFrance from '@/components/FlagFrance.vue'
-import FlagGermany from '@/components/FlagGermany.vue'
-import FlagNetherlands from '@/components/FlagNetherlands.vue'
-import FlagPoland from '@/components/FlagPoland.vue'
-import FlagRussia from '@/components/FlagRussia.vue'
-import FlagSpain from '@/components/FlagSpain.vue'
-import FlagSweden from '@/components/FlagSweden.vue'
-import FlagTurkey from '@/components/FlagTurkey.vue'
-import FlagUkraine from '@/components/FlagUkraine.vue'
-import FlagUnitedStates from '@/components/FlagUnitedStates.vue'
 
-const { locale, t } = useI18n({ useScope: 'global' })
+const { t } = useI18n({ useScope: 'global' })
 
 const preLoading = ref(true)
 const loading = ref(false)
@@ -91,10 +78,6 @@ function catchError(error: unknown) {
   errors.push(t('error', { error }))
 }
 
-function setLocale(newLocale: string) {
-  locale.value = newLocale
-}
-
 function reloadPage() {
   // Force reloads on supported browsers. On other browsers, the boolean
   // will just be ignored.
@@ -150,29 +133,6 @@ function reloadPage() {
     </transition>
 
     <hr />
-
-    <footer class="text-center">
-      <FlagUnitedStates @click="setLocale('en')" title="English" />
-      <FlagFrance @click="setLocale('fr')" title="Français" />
-      <FlagGermany @click="setLocale('de')" title="Deutsch" />
-      <FlagNetherlands @click="setLocale('nl')" title="Nederlands" />
-      <FlagSpain @click="setLocale('es-ES')" title="Español" />
-      <FlagSweden @click="setLocale('sv-SE')" title="Svenska" />
-      <FlagBrazil @click="setLocale('pt-BR')" title="Português brasileiro" />
-      <FlagCzechia @click="setLocale('cs')" title="Čeština" />
-      <FlagPoland @click="setLocale('pl')" title="Polski" />
-      <FlagRussia @click="setLocale('ru')" title="Русский" />
-      <FlagChina @click="setLocale('zh-CN')" title="简体中文" />
-      <FlagUkraine @click="setLocale('uk')" title="Українська" />
-      <FlagTurkey @click="setLocale('tr')" title="Türkçe" />
-
-      <i18n-t keypath="copyright" tag="p" class="mb-0">
-        <template #azuriom>
-          <a href="https://azuriom.com/" target="_blank" rel="noopener noreferrer">Azuriom</a>
-        </template>
-        <template #year>{{ new Date().getFullYear() }}</template>
-      </i18n-t>
-    </footer>
   </div>
 </template>
 

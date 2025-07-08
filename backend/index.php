@@ -314,7 +314,7 @@ if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
 
         if ($action === 'download') {
             // Get the latest download url
-            $json = read_url('https://market.azuriom.com/api/download');
+            $json = read_url('http://localhost:8000/api/download/panel');
 
             $response = json_decode($json);
 
@@ -369,4 +369,19 @@ if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
 }
 
 ?>
-<!-- Vue.js file -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="https://azuriom.com/assets/img/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Installation - Azuriom</title>
+    <script type="module" crossorigin src="/assets/index-CH9U6D0r.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-IWnMJsOy.css">
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+</html>
+
+
