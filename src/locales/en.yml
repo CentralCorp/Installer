@@ -2,7 +2,7 @@ title: 'Installation'
 loading: 'Loading...'
 continue: 'Continue'
 error: 'An error occurred: {error}'
-welcome: 'Azuriom is a complete free and open-source web solution for game servers. Enjoy dozens of extensions for endless possibilities.'
+welcome: 'CentralCorp Panel is the management panel for CentralCorp Launcher'
 copyright: 'Copyright © 2019-{year} {azuriom} - All rights reserved.'
 unknown: 'Unknown'
 
@@ -25,11 +25,11 @@ requirements:
     extension: 'You can try this command to install the missing PHP extensions: `{command}`.\n Once done, restart Apache or Nginx.'
     function: 'This function can be enabled in the php.ini file (`{path}`), by editing the value of `disable_functions`. On a shared web hosting, you may have to ask their support.'
 
-  missing: "Your server doesn't have the necessary requirements to install Azuriom."
+  missing: "Your server doesn't have the necessary requirements to install CentralCorp Panel."
   recheck: 'Recheck'
-  success: 'Your server has the prerequisites to install Azuriom, you can continue the installation !'
+  success: 'Your server has the prerequisites to install CentralCorp Panel, you can continue the installation !'
 
 download:
   title: 'Download'
-  info: 'Azuriom can now be downloaded, this operation may take a few minutes...'
+  info: 'CentralCorp Panel can now be downloaded, this operation may take a few minutes...'
   go: 'Download'
