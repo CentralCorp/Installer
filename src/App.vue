@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import CentralCorpInstaller from './views/CentralCorpInstaller.vue'
 import { useI18n } from 'vue-i18n'
-import { BIconGlobe } from 'bootstrap-icons-vue'
 
 const { t, locale } = useI18n()
 const currentYear = new Date().getFullYear()
