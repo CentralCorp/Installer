@@ -5,34 +5,45 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Azuriom</title>
+  <title>CentralCorp Panel</title>
 </head>
 <body style="font-family: sans-serif; text-align: center; margin-top: 1rem">
-<h1>Azuriom - PHP installation issue</h1>
+<h1>CentralCorp Panel - PHP installation issue</h1>
 <h2>PHP is not executed</h2>
 <p>If you see this page in your browser, it means that PHP is not installed or not configured properly on your server.</p>
 <p>On Linux with Apache2 you can try the following command: <code>apt install libapache2-mod-php</code></p>
 <p>If you are using another setup, please refer to your web server documentation.</p>
 <hr>
-<p>This is NOT an issue related to Azuriom.</p>
+<p>This is NOT an issue related to CentralCorp Panel.</p>
 </body>
 </html><!--
 */
 
 /**
- * The Azuriom installer.
+ * The CentralCorp Panel installer.
  *
- * This file is not a part of Azuriom itself,
- * and can be removed when Azuriom is installed.
+ * This file is not a part of CentralCorp Panel itself,
+ * and can be removed when CentralCorp Panel is installed.
  *
- * @author Azuriom
+ * @author CentralCorp
  */
 $installerVersion = '1.2.0';
 
 $minPhpVersion = '8.2';
 
 $requiredExtensions = [
-    'bcmath', 'ctype', 'json', 'mbstring', 'openssl', 'PDO', 'tokenizer', 'xml', 'xmlwriter', 'curl', 'fileinfo', 'zip',
+    'bcmath',
+    'ctype',
+    'json',
+    'mbstring',
+    'openssl',
+    'PDO',
+    'tokenizer',
+    'xml',
+    'xmlwriter',
+    'curl',
+    'fileinfo',
+    'zip',
 ];
 
 set_error_handler(function ($level, $message, $file = 'unknown', $line = 0) {
@@ -80,7 +91,7 @@ function array_get($array, $key, $default = null)
     }
 
     foreach (explode('.', $key) as $segment) {
-        if (! array_key_exists($segment, $array)) {
+        if (!array_key_exists($segment, $array)) {
             return $default;
         }
 
@@ -109,7 +120,7 @@ function request_url()
 {
     $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
     $host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
-    $path = ! empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'])[0] : '';
+    $path = !empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'])[0] : '';
 
     return "{$scheme}://{$host}{$path}";
 }
@@ -128,7 +139,7 @@ function request_input($key, $default = null)
 {
     global $requestContent;
 
-    if (! in_array(request_method(), ['GET', 'HEAD'], true)) {
+    if (!in_array(request_method(), ['GET', 'HEAD'], true)) {
         if ($requestContent === null) {
             $requestContent = json_decode(file_get_contents('php://input'), true);
         }
@@ -185,7 +196,7 @@ function read_url($url, $curlOptions = null)
     curl_setopt_array($ch, [
         CURLOPT_CONNECTTIMEOUT => 150,
         CURLOPT_HTTPHEADER => [
-            'User-Agent: Azuriom Installer v1',
+            'User-Agent: CentralCorp Panel Installer v1',
         ],
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
@@ -239,7 +250,7 @@ function download_file($url, $path)
  */
 function has_function($function)
 {
-    if (! function_exists($function)) {
+    if (!function_exists($function)) {
         return false;
     }
 
@@ -268,8 +279,10 @@ if (array_get($_GET, 'phpinfo') === '') {
 //
 // Give the requested data if the request is from AJAX.
 //
-if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
-    || array_get($_GET, 'execute') === 'php') {
+if (
+    array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
+    || array_get($_GET, 'execute') === 'php'
+) {
     try {
         $data = [
             'installerVersion' => $installerVersion,
@@ -279,13 +292,13 @@ if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
             'phpIniPath' => php_ini_loaded_file(),
             'path' => __DIR__,
             'file' => __FILE__,
-            'htaccess' => file_exists(__DIR__.'/.htaccess') && file_exists(__DIR__.'/public/.htaccess'),
+            'htaccess' => file_exists(__DIR__ . '/.htaccess') && file_exists(__DIR__ . '/public/.htaccess'),
             'windows' => is_windows(),
         ];
 
         $step = 'check';
 
-        $writable = is_writable(__DIR__) && is_writable(__DIR__.'/public');
+        $writable = is_writable(__DIR__) && is_writable(__DIR__ . '/public');
 
         $requirements = [
             'php' => version_compare(PHP_VERSION, $minPhpVersion, '>='),
@@ -294,16 +307,16 @@ if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
             'rewrite' => isset($validInstallationUrlRewrite),
         ];
 
-        $extracted = file_exists(__DIR__.'/vendor');
+        $extracted = file_exists(__DIR__ . '/vendor');
 
         foreach ($requiredExtensions as $extension) {
-            $requirements['extension-'.$extension] = extension_loaded($extension);
+            $requirements['extension-' . $extension] = extension_loaded($extension);
         }
 
         $data['requirements'] = $requirements;
 
-        $data['compatible'] = ! in_array(false, $requirements, true);
-        $data['downloaded'] = file_exists(__DIR__.'/Azuriom.zip');
+        $data['compatible'] = !in_array(false, $requirements, true);
+        $data['downloaded'] = file_exists(__DIR__ . '/CentralCorpPanel.zip');
         $data['extracted'] = $extracted;
 
         $action = request_input('action');
@@ -313,56 +326,57 @@ if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
         }
 
         if ($action === 'download') {
-            // Get the latest download url
-            $json = read_url('http://localhost:8000/api/download/panel');
+            // Get the latest release from GitHub
+            $json = read_url('https://api.github.com/repos/CentralCorp/centralpanel-v2/releases/latest');
+            $release = json_decode($json);
 
-            $response = json_decode($json);
-
-            if (! $response) {
-                throw new RuntimeException('The response from Azuriom API is not a valid JSON.');
+            if (!$release || !isset($release->assets)) {
+                throw new RuntimeException('Unable to fetch the latest release from GitHub.');
             }
 
-            $file = __DIR__.'/'.$response->file;
-            $needDownload = true;
-
-            if (file_exists($file)) {
-                // File was already downloaded before, if it's valid we don't
-                // need to download it again.
-                if (hash_equals($response->hash, hash_file('sha256', $file))) {
-                    $needDownload = false;
-                } else {
-                    unlink($file);
+            $asset = null;
+            foreach ($release->assets as $a) {
+                if (str_starts_with($a->name, 'panel-') && str_ends_with($a->name, '.zip')) {
+                    $asset = $a;
+                    break;
                 }
             }
 
-            if ($needDownload) {
-                download_file($response->url, $file);
+            if (!$asset) {
+                throw new RuntimeException('No matching asset (panel-*.zip) found in the latest release.');
             }
 
-            if (! file_exists($file)) {
+            $file = __DIR__ . '/' . $asset->name;
+
+            // Download
+            download_file($asset->browser_download_url, $file);
+
+            if (!file_exists($file)) {
                 throw new RuntimeException('The file was not downloaded.');
             }
 
-            if (! hash_equals($response->hash, hash_file('sha256', $file))) {
-                throw new RuntimeException('File size don\'t match the expected size.');
-            }
-
+            // Extract
             $zip = new ZipArchive();
 
             if (($status = $zip->open($file)) !== true) {
-                throw new RuntimeException('Unable to open zip: '.$status.'.');
+                throw new RuntimeException('Unable to open zip: ' . $status . '.');
             }
 
-            if (! $zip->extractTo(__DIR__)) {
+            if (!$zip->extractTo(__DIR__)) {
                 throw new RuntimeException('Unable to extract zip');
             }
 
             $zip->close();
 
+            // Cleanup zip file
+            if (file_exists($file)) {
+                unlink($file);
+            }
+
             send_json_response($data);
         }
 
-        send_json_response('Unexpected action: '.$action, 403);
+        send_json_response('Unexpected action: ' . $action, 403);
     } catch (Throwable $t) {
         send_json_response(['message' => $t->getMessage()], 500);
     }
@@ -371,17 +385,18 @@ if (array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') === 'XMLHttpRequest'
 ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="https://azuriom.com/assets/img/logo.png" />
+    <link rel="icon" href="https://centralcorp.github.io/assets/img/panel.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Installation - Azuriom</title>
-    <script type="module" crossorigin src="/assets/index-CH9U6D0r.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-IWnMJsOy.css">
-  </head>
-  <body>
+    <title>Installation - CentralCorp Panel</title>
+    <script type="module" crossorigin src="/assets/index-D_C_85g7.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dzs8JucK.css">
+</head>
+
+<body>
     <div id="app"></div>
-  </body>
+</body>
+
 </html>
-
-

@@ -3,7 +3,7 @@ loading: 'Loading...'
 continue: 'Continue'
 error: 'An error occurred: {error}'
 welcome: 'CentralCorp Panel is the management panel for CentralCorp Launcher'
-copyright: 'Copyright © 2019-{year} {azuriom} - All rights reserved.'
+copyright: 'Copyright © {year} CentralCorp - All rights reserved.'
 unknown: 'Unknown'
 
 documentation: 'Documentation'

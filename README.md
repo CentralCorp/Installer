@@ -1,7 +1,7 @@
 # CENTRALCORP INSTALLER
 
 
-[![Chat](https://img.shields.io/discord/1143633670935167006?color=5865f2&label=Discord&logo=discord&logoColor=fff&style=flat-square)](https://azuriom.com/discord)
+[![Chat](https://img.shields.io/discord/1143633670935167006?color=5865f2&label=Discord&logo=discord&logoColor=fff&style=flat-square)](https://discord.gg/Bnpw2awVRV)
 
 An automatic installer for CentralCorp Panel
 
@@ -31,4 +31,4 @@ npm run lint
 
 
 
-Thanks to Azuriom
+Based on Azuriom Installer
