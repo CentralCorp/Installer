@@ -362,10 +362,7 @@ if (
                 throw new RuntimeException('Unable to open zip: ' . $status . '.');
             }
 
-            if ($zip->extractTo(__DIR__)) {
-                $envContent = 'APP_KEY=base64:hmU1T3OuvHdi5t1wULI8Xp7geI+JIWGog9pBCNxslY8=';
-                file_put_contents(__DIR__ . '/.env', $envContent);
-            } else {
+            if (!$zip->extractTo(__DIR__)) {
                 throw new RuntimeException('Unable to extract zip');
             }
 
