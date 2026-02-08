@@ -53,7 +53,7 @@ function setLanguage(code: string) {
               <div class="card-body p-4 p-md-5">
                 <header class="text-center mb-4">
                   <img 
-                    src="https://centralcorp.github.io/assets/img/panel.png" 
+                    src="https://centralcorp.github.io/img/panel.png" 
                     alt="CentralCorp Panel Logo" 
                     class="mb-3" 
                     width="280"
