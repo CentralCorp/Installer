@@ -368,10 +368,6 @@ if (
 
             $zip->close();
 
-
-
-
-
             // Cleanup zip file
             if (file_exists($file)) {
                 unlink($file);
