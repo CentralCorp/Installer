@@ -25,6 +25,11 @@ jobs:
       - name: Build frontend assets
         run: npm run build-only
 
+      - name: Copy assets to backend
+        run: |
+          mkdir -p backend/public/assets
+          cp -r dist/assets/* backend/public/assets/
+
       - name: Push assets to dist branch
         run: |
           git config user.name "github-actions[bot]"
