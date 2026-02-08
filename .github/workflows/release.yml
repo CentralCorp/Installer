@@ -22,8 +22,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build installer package
+      - name: Build installer package with CDN
         run: npm run package
+        env:
+          CDN_BASE_URL: https://cdn.jsdelivr.net/gh/${{ github.repository }}@${{ github.ref_name }}/backend/public
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

@@ -26,7 +26,16 @@ const BACKEND_DIR = path.join(ROOT_DIR, 'backend');
 const PUBLIC_ASSETS_DIR = path.join(BACKEND_DIR, 'public', 'assets');
 const OUTPUT_ZIP = path.join(ROOT_DIR, 'installer.zip');
 
+// CDN Configuration
+// Set CDN_BASE_URL environment variable to load assets from CDN
+// Example: CDN_BASE_URL=https://cdn.jsdelivr.net/gh/CentralCorp/Installer@1.2.0/backend/public npm run build:prod
+const CDN_BASE_URL = process.env.CDN_BASE_URL || '';
+const USE_CDN = CDN_BASE_URL.length > 0;
+
 console.log('🔨 Building CentralCorp Panel Installer...\n');
+if (USE_CDN) {
+    console.log(`🌐 CDN Mode: Assets will be loaded from ${CDN_BASE_URL}\n`);
+}
 
 // Step 1: Run Vite build
 console.log('📦 Running Vite build...');
@@ -79,20 +88,27 @@ console.log('\n✏️  Updating backend/index.php with new asset filenames...');
 const indexPhpPath = path.join(BACKEND_DIR, 'index.php');
 let indexPhpContent = fs.readFileSync(indexPhpPath, 'utf8');
 
-// Replace JS file reference
+// Determine asset base path (CDN or local)
+const assetBasePath = USE_CDN ? `${CDN_BASE_URL}/assets` : '/assets';
+
+// Replace JS file reference (supports both local /assets/ and CDN URLs)
 indexPhpContent = indexPhpContent.replace(
-    /src="\/assets\/index-[^"]+\.js"/,
-    `src="/assets/${jsFile}"`
+    /src="[^"]*\/assets\/index-[^"]+\.js"/,
+    `src="${assetBasePath}/${jsFile}"`
 );
 
-// Replace CSS file reference
+// Replace CSS file reference (supports both local /assets/ and CDN URLs)
 indexPhpContent = indexPhpContent.replace(
-    /href="\/assets\/index-[^"]+\.css"/,
-    `href="/assets/${cssFile}"`
+    /href="[^"]*\/assets\/index-[^"]+\.css"/,
+    `href="${assetBasePath}/${cssFile}"`
 );
 
 fs.writeFileSync(indexPhpPath, indexPhpContent);
-console.log('   Updated asset references in index.php');
+console.log(`   Updated asset references in index.php`);
+if (USE_CDN) {
+    console.log(`   JS:  ${assetBasePath}/${jsFile}`);
+    console.log(`   CSS: ${assetBasePath}/${cssFile}`);
+}
 
 // Step 5: Create ZIP file
 console.log('\n📦 Creating installer.zip...');

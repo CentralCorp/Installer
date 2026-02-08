@@ -11,7 +11,8 @@
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
     "format": "prettier --write src/",
-    "package": "node scripts/build.js"
+    "package": "node scripts/build.js",
+    "package:cdn": "node scripts/build.js"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.6",
