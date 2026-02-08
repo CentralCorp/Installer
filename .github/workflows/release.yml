@@ -32,22 +32,40 @@ jobs:
 
       - name: Push assets to dist branch
         run: |
+          # Save assets to temp directory
+          mkdir -p /tmp/assets-backup
+          cp -r backend/public/assets/* /tmp/assets-backup/
+          
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
           # Create orphan dist branch with only assets
           git checkout --orphan dist-temp
-          git reset
+          git reset --hard
+          git clean -fd
           
-          # Add only the built assets
+          # Restore assets and commit
+          mkdir -p backend/public/assets
+          cp -r /tmp/assets-backup/* backend/public/assets/
           git add -f backend/public/assets/
           git commit -m "Assets for ${{ github.ref_name }}"
           
           # Force push to dist branch
           git push origin dist-temp:dist --force
-          
-          # Switch back to original branch
-          git checkout ${{ github.ref_name }}
+
+      - name: Checkout again for package build
+        uses: actions/checkout@v4
+        with:
+          clean: true
+
+      - name: Setup Node.js again
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies again
+        run: npm ci
 
       - name: Build installer package with CDN
         run: npm run package
