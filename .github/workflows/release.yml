@@ -22,10 +22,32 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build frontend assets
+        run: npm run build-only
+
+      - name: Push assets to dist branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Create orphan dist branch with only assets
+          git checkout --orphan dist-temp
+          git reset
+          
+          # Add only the built assets
+          git add -f backend/public/assets/
+          git commit -m "Assets for ${{ github.ref_name }}"
+          
+          # Force push to dist branch
+          git push origin dist-temp:dist --force
+          
+          # Switch back to original branch
+          git checkout ${{ github.ref_name }}
+
       - name: Build installer package with CDN
         run: npm run package
         env:
-          CDN_BASE_URL: https://cdn.jsdelivr.net/gh/${{ github.repository }}@${{ github.ref_name }}/backend/public
+          CDN_BASE_URL: https://cdn.jsdelivr.net/gh/${{ github.repository }}@dist
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
