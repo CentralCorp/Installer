@@ -388,7 +388,7 @@ if (
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="https://centralcorp.github.io/assets/img/panel.png" />
+    <link rel="icon" href="https://centralcorp.github.io/img/panel.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Installation - CentralCorp Panel</title>
     <script type="module" crossorigin src="/assets/index-D_C_85g7.js"></script>
