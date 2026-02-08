@@ -70,7 +70,7 @@ jobs:
       - name: Build installer package with CDN
         run: npm run package
         env:
-          CDN_BASE_URL: https://cdn.jsdelivr.net/gh/${{ github.repository }}@dist
+          CDN_BASE_URL: https://cdn.jsdelivr.net/gh/${{ github.repository }}@dist/backend/public
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
