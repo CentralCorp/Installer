@@ -141,7 +141,6 @@ archive.pipe(output);
 // Add backend files to ZIP (at root level)
 archive.directory(path.join(BACKEND_DIR, 'public'), 'public');
 archive.file(path.join(BACKEND_DIR, 'index.php'), { name: 'index.php' });
-archive.file(path.join(BACKEND_DIR, 'index.html'), { name: 'index.html' });
 archive.file(path.join(BACKEND_DIR, '.htaccess'), { name: '.htaccess' });
 
 archive.finalize();

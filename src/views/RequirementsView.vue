@@ -79,7 +79,7 @@ function translateRequirementHelp(requirement: string) {
   return requirement === 'writable' && !props.data.htaccess
     ? t('requirements.help.htaccess')
     : t(`requirements.help.${requirement}`, {
-        docs: `<a href="#" target="_blank" rel="noopener noreferrer">${t('documentation')}</a>`,
+        docs: `<a href="https://centralcorp.github.io/" target="_blank" rel="noopener noreferrer">${t('documentation')}</a>`,
       })
 }
 

@@ -2,7 +2,7 @@ title: 'Installation'
 loading: 'Chargement...'
 continue: 'Continuer'
 error: 'Une erreur est survenue : {error}'
-welcome: "CentralCorp Panel est le pannel de gestion du CentralCorp Launcher"
+welcome: "CentralCorp Panel est l'outil de gestion du CentralCorp Launcher"
 copyright: 'Copyright © {year} CentralCorp - Tous droits réservés.'
 unknown: 'Inconnu'
 docs: 'documentation'
