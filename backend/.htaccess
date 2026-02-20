@@ -1,10 +1,9 @@
 <IfModule mod_rewrite.c>
    RewriteEngine on
 
-   # Don't rewrite requests for assets
-   RewriteCond %{REQUEST_URI} !^/assets/
-   RewriteRule ^$ public/ [L]
+   # Serve frontend assets from public/assets
+   RewriteRule ^assets/(.*)$ public/assets/$1 [L]
 
-   RewriteCond %{REQUEST_URI} !^/assets/
-   RewriteRule (^[^/]*$) public/$1 [L]
+   RewriteRule ^$ public/ [L]
+   RewriteRule ^([^/]+)$ public/$1 [L]
 </IfModule>
