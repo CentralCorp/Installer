@@ -9,19 +9,26 @@ export interface FetchedData {
   path: string
   file: string
   htaccess: boolean
+  webConfig: boolean
   requirements: Record<string, boolean>
   compatible: boolean
   extracted?: boolean
   windows?: boolean
 }
 
+const currentUrl = new URL(window.location.href)
+const baseUrl = `${currentUrl.origin}${currentUrl.pathname}`
+
 const client = fetcher({
-  base: window.location.href,
+  base: baseUrl,
   headers: {
     'X-Requested-With': 'XMLHttpRequest',
   },
   transformRequest(request) {
-    return { ...request, url: `${request.url}?execute=php` }
+    const url = new URL(request.url, baseUrl)
+    url.searchParams.set('execute', 'php')
+
+    return { ...request, url: url.toString() }
   },
 })
 

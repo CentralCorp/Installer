@@ -125,6 +125,32 @@ function request_url()
     return "{$scheme}://{$host}{$path}";
 }
 
+/**
+ * Detect whether URL rewrite is effectively enabled for the installer.
+ *
+ * @return bool
+ */
+function detect_url_rewrite()
+{
+    global $validInstallationUrlRewrite;
+
+    if (isset($validInstallationUrlRewrite) && $validInstallationUrlRewrite === true) {
+        return true;
+    }
+
+    // IIS exposes whether the current request was rewritten.
+    if (array_get($_SERVER, 'IIS_WasUrlRewritten') === '1') {
+        return true;
+    }
+
+    // Apache usually sets REDIRECT_URL on internally rewritten requests.
+    if (array_get($_SERVER, 'REDIRECT_URL') !== null) {
+        return true;
+    }
+
+    return false;
+}
+
 $requestContent = null;
 
 /**
@@ -293,6 +319,7 @@ if (
             'path' => __DIR__,
             'file' => __FILE__,
             'htaccess' => file_exists(__DIR__ . '/.htaccess') && file_exists(__DIR__ . '/public/.htaccess'),
+            'webConfig' => file_exists(__DIR__ . '/web.config') && file_exists(__DIR__ . '/public/web.config'),
             'windows' => is_windows(),
         ];
 
@@ -304,7 +331,7 @@ if (
             'php' => version_compare(PHP_VERSION, $minPhpVersion, '>='),
             'writable' => $writable,
             'function-symlink' => has_function('symlink'),
-            'rewrite' => isset($validInstallationUrlRewrite),
+            'rewrite' => detect_url_rewrite(),
         ];
 
         $extracted = file_exists(__DIR__ . '/vendor');
@@ -391,8 +418,8 @@ if (
     <link rel="icon" href="https://centralcorp.github.io/img/panel.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Installation - CentralCorp Panel</title>
-    <script type="module" crossorigin src="/assets/index-D_C_85g7.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-Dzs8JucK.css">
+    <script type="module" crossorigin src="assets/index-DuUlEHXX.js"></script>
+    <link rel="stylesheet" crossorigin href="assets/index-DEdo8VBC.css">
 </head>
 
 <body>
