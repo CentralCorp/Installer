@@ -76,9 +76,7 @@ function translateRequirementHelp(requirement: string) {
     })
   }
 
-  return requirement === 'rewrite' && props.data.windows && !props.data.webConfig
-    ? t('requirements.help.webconfig')
-    : requirement === 'rewrite' && !props.data.windows && !props.data.htaccess
+  return requirement === 'writable' && !props.data.htaccess
     ? t('requirements.help.htaccess')
     : t(`requirements.help.${requirement}`, {
         docs: `<a href="https://centralcorp.github.io/" target="_blank" rel="noopener noreferrer">${t('documentation')}</a>`,

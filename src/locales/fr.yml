@@ -3,34 +3,32 @@ loading: 'Chargement...'
 continue: 'Continuer'
 error: 'Une erreur est survenue : {error}'
 welcome: "CentralCorp Panel est l'outil de gestion du CentralCorp Launcher"
-copyright: 'Copyright (c) {year} CentralCorp - Tous droits reserves.'
+copyright: 'Copyright © {year} CentralCorp - Tous droits réservés.'
 unknown: 'Inconnu'
 docs: 'documentation'
-documentation: 'documentation'
 
 help:
-  curl60: 'Vous pouvez suivre les etapes dans la {docs} pour corriger ce probleme. Chemin du fichier php.ini : {path}'
+  curl60: 'Vous pouvez suivre les étapes dans la {docs} pour corriger ce problème. Chemin du fichier php.ini : {path}'
 
 requirements:
-  php: 'PHP {version} ou plus recent'
-  writable: 'Droits en ecriture'
-  rewrite: "Reecriture d'URL activee"
+  php: 'PHP {version} ou plus récent'
+  writable: 'Droits en écriture'
+  rewrite: "Réécriture d'URL activée"
   extension: 'Extension {extension}'
-  function: 'Fonction {function} activee'
+  function: 'Fonction {function} activée'
 
   help:
-    writable: "Vous pouvez essayer cette commande pour autoriser l'ecriture : `{command}`."
-    rewrite: "Vous pouvez suivre les instructions dans notre {docs} pour activer la reecriture d'URL."
-    webconfig: "Le fichier `web.config` ou `public/web.config` est manquant. Verifiez que IIS URL Rewrite est installe et que ces fichiers sont presents."
-    htaccess: "Le fichier `.htaccess` ou `public/.htaccess` est manquant. Assurez-vous d'avoir active les fichiers caches et que le fichier est present."
-    extension: 'Vous pouvez essayer cette commande pour installer les extensions PHP manquantes : `{command}`.\n Une fois fait, redemarrez Apache ou Nginx.'
-    function: 'Cette fonction peut etre activee dans le fichier php.ini (`{path}`), en modifiant la valeur de `disable_functions`. Sur un hebergement web mutualise, vous devrez peut-etre contacter leur support.'
+    writable: "Vous pouvez essayer de faire cette commande pour autoriser l'écriture : `{command}`."
+    rewrite: "Vous pouvez suivre les instructions dans notre {docs} pour activer la réécriture d'URL."
+    htaccess: "Le fichier `.htaccess` or `public/.htaccess` est manquant. Assurez-vous d'avoir activé les fichiers cachés et que le fichier est bien présent."
+    extension: 'Vous pouvez essayer de faire cette commande pour installer les extensions PHP manquantes : `{command}`\n Une fois fait, redémarrez Apache ou Nginx.'
+    function: 'Cette fonction peut être activée dans le fichier php.ini (`{path}`), en modifiant la valeur de `disable_functions`. Sur un hébergement web mutualisé, vous devrez peut être contacter leur support.'
 
-  missing: "Votre serveur n'a pas les pre-requis necessaires pour installer CentralCorp Panel."
-  recheck: 'Reverifier'
-  success: "Votre serveur a les pre-requis pour installer CentralCorp Panel, vous pouvez continuer l'installation !"
+  missing: "Votre serveur n'a pas les pré-requis nécessaires pour installer CentralCorp Panel."
+  recheck: 'Revérifier'
+  success: "Votre serveur a les pré-requis pour installer CentralCorp Panel, vous pouvez continuer l'installation !"
 
 download:
-  title: 'Telechargement'
-  info: 'CentralCorp Panel peut maintenant etre telecharge, cette operation peut durer quelques minutes...'
-  go: 'Telecharger'
+  title: 'Téléchargement'
+  info: 'CentralCorp Panel peut maintenant être téléchargé, cette opération peut durer quelques minutes...'
+  go: 'Télécharger'

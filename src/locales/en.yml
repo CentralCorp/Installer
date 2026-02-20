@@ -21,7 +21,6 @@ requirements:
   help:
     writable: 'You can try this command to grant write permission: `{command}`.'
     rewrite: 'You can follow the instructions in our {docs} to enable URL rewriting.'
-    webconfig: 'The file `web.config` or `public/web.config` is missing. Make sure IIS URL Rewrite is installed and those files are present.'
     htaccess: 'The file `.htaccess` or `public/.htaccess` is missing. Make sure you have enabled hidden files and that the file is present.'
     extension: 'You can try this command to install the missing PHP extensions: `{command}`.\n Once done, restart Apache or Nginx.'
     function: 'This function can be enabled in the php.ini file (`{path}`), by editing the value of `disable_functions`. On a shared web hosting, you may have to ask their support.'

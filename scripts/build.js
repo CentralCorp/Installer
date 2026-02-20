@@ -28,7 +28,7 @@ const OUTPUT_ZIP = path.join(ROOT_DIR, 'installer.zip');
 
 // CDN Configuration
 // Set CDN_BASE_URL environment variable to load assets from CDN
-// Example: CDN_BASE_URL=https://cdn.jsdelivr.net/gh/CentralCorp/Installer@1.2.0/backend/public npm run package
+// Example: CDN_BASE_URL=https://cdn.jsdelivr.net/gh/CentralCorp/Installer@1.2.0/backend/public npm run build:prod
 const CDN_BASE_URL = process.env.CDN_BASE_URL || '';
 const USE_CDN = CDN_BASE_URL.length > 0;
 
@@ -89,17 +89,17 @@ const indexPhpPath = path.join(BACKEND_DIR, 'index.php');
 let indexPhpContent = fs.readFileSync(indexPhpPath, 'utf8');
 
 // Determine asset base path (CDN or local)
-const assetBasePath = USE_CDN ? `${CDN_BASE_URL}/assets` : 'assets';
+const assetBasePath = USE_CDN ? `${CDN_BASE_URL}/assets` : '/assets';
 
 // Replace JS file reference (supports both local /assets/ and CDN URLs)
 indexPhpContent = indexPhpContent.replace(
-    /src="[^"]*assets\/index-[^"]+\.js"/,
+    /src="[^"]*\/assets\/index-[^"]+\.js"/,
     `src="${assetBasePath}/${jsFile}"`
 );
 
 // Replace CSS file reference (supports both local /assets/ and CDN URLs)
 indexPhpContent = indexPhpContent.replace(
-    /href="[^"]*assets\/index-[^"]+\.css"/,
+    /href="[^"]*\/assets\/index-[^"]+\.css"/,
     `href="${assetBasePath}/${cssFile}"`
 );
 
@@ -142,8 +142,5 @@ archive.pipe(output);
 archive.directory(path.join(BACKEND_DIR, 'public'), 'public');
 archive.file(path.join(BACKEND_DIR, 'index.php'), { name: 'index.php' });
 archive.file(path.join(BACKEND_DIR, '.htaccess'), { name: '.htaccess' });
-if (fs.existsSync(path.join(BACKEND_DIR, 'web.config'))) {
-    archive.file(path.join(BACKEND_DIR, 'web.config'), { name: 'web.config' });
-}
 
 archive.finalize();
