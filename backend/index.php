@@ -27,7 +27,9 @@
  *
  * @author CentralCorp
  */
-$installerVersion = '1.2.0';
+$installerVersion = '2.0.0-preview.1';
+$panelRepository = 'CentralCorp/centralpanel-v2';
+$panelBranch = 'v2-rework';
 
 $minPhpVersion = '8.2';
 
@@ -264,7 +266,129 @@ function read_url($url, $curlOptions = null)
  */
 function download_file($url, $path)
 {
-    return read_url($url, [CURLOPT_FILE => fopen($path, 'wb+')]);
+    $fp = fopen($path, 'wb+');
+
+    if ($fp === false) {
+        throw new RuntimeException("Unable to open '{$path}' for writing.");
+    }
+
+    try {
+        return read_url($url, [CURLOPT_FILE => $fp]);
+    } finally {
+        fclose($fp);
+    }
+}
+
+/**
+ * Find the panel-*.zip asset inside a GitHub release payload.
+ *
+ * @param  object  $release
+ * @return null|object
+ */
+function find_panel_asset($release)
+{
+    if (!is_object($release) || !isset($release->assets) || !is_array($release->assets)) {
+        return null;
+    }
+
+    foreach ($release->assets as $asset) {
+        if (
+            isset($asset->name, $asset->browser_download_url)
+            && str_starts_with($asset->name, 'panel-')
+            && str_ends_with($asset->name, '.zip')
+        ) {
+            return $asset;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Find the matching .sha256 checksum asset inside a GitHub release payload.
+ *
+ * @param  object  $release
+ * @param  string  $zipAssetName
+ * @return null|object
+ */
+function find_panel_hash_asset($release, $zipAssetName)
+{
+    if (!is_object($release) || !isset($release->assets) || !is_array($release->assets)) {
+        return null;
+    }
+
+    $expectedName = $zipAssetName . '.sha256';
+
+    foreach ($release->assets as $asset) {
+        if (isset($asset->name, $asset->browser_download_url) && $asset->name === $expectedName) {
+            return $asset;
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Resolve the latest release (including pre-releases) built from the target branch.
+ *
+ * @param  string  $repository
+ * @param  string  $branch
+ * @return object
+ */
+function resolve_panel_release($repository, $branch)
+{
+    $headers = [
+        CURLOPT_HTTPHEADER => [
+            'Accept: application/vnd.github+json',
+            'User-Agent: CentralCorp Panel Installer v2',
+        ],
+    ];
+
+    $json = read_url("https://api.github.com/repos/{$repository}/releases?per_page=30", $headers);
+    $releases = json_decode($json);
+
+    if (!is_array($releases)) {
+        throw new RuntimeException("Unable to fetch releases from GitHub ({$repository}).");
+    }
+
+    // Pass 1: newest non-draft release explicitly targeting $branch with a panel-*.zip asset.
+    foreach ($releases as $release) {
+        if (!empty($release->draft) || find_panel_asset($release) === null) {
+            continue;
+        }
+
+        if (($release->target_commitish ?? '') === $branch) {
+            return $release;
+        }
+    }
+
+    // Pass 2: newest v2.x release whose tag belongs to $branch history (handles direct tag pushes).
+    foreach ($releases as $release) {
+        if (!empty($release->draft) || find_panel_asset($release) === null) {
+            continue;
+        }
+
+        $tag = (string) ($release->tag_name ?? '');
+        if (!str_starts_with(ltrim($tag, 'vV'), '2.')) {
+            continue;
+        }
+
+        try {
+            $compareUrl = "https://api.github.com/repos/{$repository}/compare/"
+                . rawurlencode($tag) . '...' . rawurlencode($branch);
+            $compare = json_decode(read_url($compareUrl, $headers));
+
+            if (is_object($compare) && in_array($compare->status ?? '', ['identical', 'ahead'], true)) {
+                return $release;
+            }
+        } catch (Throwable $e) {
+            // Ignore compare error and continue scanning candidates.
+        }
+    }
+
+    throw new RuntimeException(
+        "No matching release with panel-*.zip found for {$repository} on branch '{$branch}'."
+    );
 }
 
 /**
@@ -302,6 +426,18 @@ if (array_get($_GET, 'phpinfo') === '') {
     exit();
 }
 
+// If the panel has already been extracted and this entry point still exists, delegate directly to Laravel.
+if (
+    file_exists(__DIR__ . '/vendor/autoload.php')
+    && file_exists(__DIR__ . '/public/index.php')
+    && file_exists(__DIR__ . '/artisan')
+    && array_get($_GET, 'execute') !== 'php'
+    && array_get($_SERVER, 'HTTP_X_REQUESTED_WITH') !== 'XMLHttpRequest'
+) {
+    require __DIR__ . '/public/index.php';
+    exit();
+}
+
 //
 // Give the requested data if the request is from AJAX.
 //
@@ -312,6 +448,8 @@ if (
     try {
         $data = [
             'installerVersion' => $installerVersion,
+            'panelRepository' => $panelRepository,
+            'panelBranch' => $panelBranch,
             'minPhpVersion' => $minPhpVersion,
             'phpVersion' => parse_php_version(),
             'phpFullVersion' => PHP_VERSION,
@@ -353,49 +491,55 @@ if (
         }
 
         if ($action === 'download') {
-            // Get the latest release from GitHub
-            $json = read_url('https://api.github.com/repos/CentralCorp/centralpanel-v2/releases/latest');
-            $release = json_decode($json);
-
-            if (!$release || !isset($release->assets)) {
-                throw new RuntimeException('Unable to fetch the latest release from GitHub.');
-            }
-
-            $asset = null;
-            foreach ($release->assets as $a) {
-                if (str_starts_with($a->name, 'panel-') && str_ends_with($a->name, '.zip')) {
-                    $asset = $a;
-                    break;
-                }
-            }
+            // Resolve the latest release from CentralCorp/centralpanel-v2 targeting branch v2-rework
+            $release = resolve_panel_release($panelRepository, $panelBranch);
+            $asset = find_panel_asset($release);
 
             if (!$asset) {
-                throw new RuntimeException('No matching asset (panel-*.zip) found in the latest release.');
+                throw new RuntimeException(
+                    "No matching asset (panel-*.zip) found in release '{$release->tag_name}' ({$panelBranch})."
+                );
             }
 
-            $file = __DIR__ . '/' . $asset->name;
+            $file = __DIR__ . '/' . basename($asset->name);
 
-            // Download
+            // Download archive
             download_file($asset->browser_download_url, $file);
 
             if (!file_exists($file)) {
                 throw new RuntimeException('The file was not downloaded.');
             }
 
+            // Verify SHA-256 checksum when provided alongside the release asset
+            $hashAsset = find_panel_hash_asset($release, $asset->name);
+            if ($hashAsset !== null) {
+                $hashContent = trim(read_url($hashAsset->browser_download_url));
+                if (preg_match('/^([a-f0-9]{64})\b/i', $hashContent, $hashMatches)) {
+                    $actualHash = hash_file('sha256', $file);
+                    if (!is_string($actualHash) || !hash_equals(strtolower($hashMatches[1]), strtolower($actualHash))) {
+                        @unlink($file);
+                        throw new RuntimeException('Downloaded archive SHA-256 checksum mismatch.');
+                    }
+                }
+            }
+
             // Extract
             $zip = new ZipArchive();
 
             if (($status = $zip->open($file)) !== true) {
+                @unlink($file);
                 throw new RuntimeException('Unable to open zip: ' . $status . '.');
             }
 
             if (!$zip->extractTo(__DIR__)) {
+                $zip->close();
+                @unlink($file);
                 throw new RuntimeException('Unable to extract zip');
             }
 
             $zip->close();
             $finalHtaccess = __DIR__ . '/.htaccess';
-            
+
             // Define the content of the .htaccess file
             $htaccessContent = "<IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
@@ -427,11 +571,14 @@ if (
             // Write the .htaccess file
             file_put_contents($finalHtaccess, $htaccessContent);
 
-            // Cleanup zip file
+            // Cleanup zip file and installer entry point
             if (file_exists($file)) {
                 unlink($file);
             }
 
+            @unlink(__FILE__);
+
+            $data['extracted'] = true;
             send_json_response($data);
         }
 
@@ -450,8 +597,8 @@ if (
     <link rel="icon" href="https://centralcorp.github.io/img/panel.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Installation - CentralCorp Panel</title>
-    <script type="module" crossorigin src="/assets/index-C21ecbi6.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-pzMaBkPj.css">
+    <script type="module" crossorigin src="/assets/index-CMKKpWNS.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BIySbxus.css">
 </head>
 
 <body>

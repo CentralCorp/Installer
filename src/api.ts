@@ -13,6 +13,8 @@ export interface FetchedData {
   compatible: boolean
   extracted?: boolean
   windows?: boolean
+  panelRepository?: string
+  panelBranch?: string
 }
 
 const client = fetcher({
