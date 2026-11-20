@@ -1,6 +1,6 @@
 {
   "name": "Centralcorp-installer",
-  "version": "2.0.0-preview.1",
+  "version": "2.0.0-preview.2",
   "description": "Installer and hosting checks for the self-hosted CentralCorp Minecraft Launcher Panel.",
   "license": "MIT",
   "type": "module",

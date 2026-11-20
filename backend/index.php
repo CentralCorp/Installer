@@ -27,9 +27,9 @@
  *
  * @author CentralCorp
  */
-$installerVersion = '2.0.0-preview.1';
+$installerVersion = '2.0.0-preview.2';
 $panelRepository = 'CentralCorp/centralpanel-v2';
-$panelBranch = 'v2-rework';
+$panelBranch = 'v2-opti';
 
 $minPhpVersion = '8.2';
 
@@ -491,7 +491,7 @@ if (
         }
 
         if ($action === 'download') {
-            // Resolve the latest release from CentralCorp/centralpanel-v2 targeting branch v2-rework
+            // Resolve the latest release from CentralCorp/centralpanel-v2 targeting branch v2-opti
             $release = resolve_panel_release($panelRepository, $panelBranch);
             $asset = find_panel_asset($release);
 
