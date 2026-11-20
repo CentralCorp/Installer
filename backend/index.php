@@ -27,7 +27,7 @@
  *
  * @author CentralCorp
  */
-$installerVersion = '2.0.0-preview.2';
+$installerVersion = '2.0.0-preview.3';
 $panelRepository = 'CentralCorp/centralpanel-v2';
 $panelBranch = 'v2-opti';
 
